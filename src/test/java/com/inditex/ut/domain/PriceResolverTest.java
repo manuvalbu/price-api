@@ -3,14 +3,15 @@ package com.inditex.ut.domain;
 import com.inditex.domain.entity.Price;
 import com.inditex.domain.exception.PriceNotFoundException;
 import com.inditex.domain.service.PriceResolver;
+import com.inditex.domain.vo.Currency;
+import com.inditex.domain.vo.DateRange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.*;
 
 class PriceResolverTest {
@@ -22,19 +23,27 @@ class PriceResolverTest {
         resolver = new PriceResolver();
     }
 
-    // ────────────────────────────────────────────────
-    //  Constants
-    // ────────────────────────────────────────────────
     private static final Long PRODUCT_35455 = 35455L;
     private static final Long BRAND_ZARA = 1L;
 
-    // Official sample data from the exercise – using the current Price.of signature
     private List<Price> samplePrices() {
         return List.of(
-                Price.of(PRODUCT_35455, BRAND_ZARA, 1, 0, "35.50", "EUR", "2020-06-14T00:00:00", "2020-12-31T23:59:59"),
-                Price.of(PRODUCT_35455, BRAND_ZARA, 2, 1, "25.45", "EUR", "2020-06-14T15:00:00", "2020-06-14T18:30:00"),
-                Price.of(PRODUCT_35455, BRAND_ZARA, 3, 1, "30.50", "EUR", "2020-06-15T00:00:00", "2020-06-15T11:00:00"),
-                Price.of(PRODUCT_35455, BRAND_ZARA, 4, 1, "38.95", "EUR", "2020-06-15T16:00:00", "2020-12-31T23:59:59")
+                Price.builder().productId(PRODUCT_35455).brandId(BRAND_ZARA).priceList(1).priority(0)
+                        .price(BigDecimal.valueOf(35.50)).currency(Currency.of("EUR"))
+                        .dateRange(DateRange.of(LocalDateTime.parse("2020-06-14T00:00:00"),LocalDateTime.parse("2020-12-31T23:59:59")))
+                        .build(),
+                Price.builder().productId(PRODUCT_35455).brandId(BRAND_ZARA).priceList(2).priority(1)
+                        .price(BigDecimal.valueOf(25.45)).currency(Currency.of("EUR"))
+                        .dateRange(DateRange.of(LocalDateTime.parse("2020-06-14T15:00:00"),LocalDateTime.parse("2020-06-14T18:30:00")))
+                        .build(),
+                Price.builder().productId(PRODUCT_35455).brandId(BRAND_ZARA).priceList(3).priority(1)
+                        .price(BigDecimal.valueOf(30.50)).currency(Currency.of("EUR"))
+                        .dateRange(DateRange.of(LocalDateTime.parse("2020-06-15T00:00:00"),LocalDateTime.parse("2020-06-15T11:00:00")))
+                        .build(),
+                Price.builder().productId(PRODUCT_35455).brandId(BRAND_ZARA).priceList(4).priority(1)
+                        .price(BigDecimal.valueOf(38.95)).currency(Currency.of("EUR"))
+                        .dateRange(DateRange.of(LocalDateTime.parse("2020-06-15T16:00:00"),LocalDateTime.parse("2020-12-31T23:59:59")))
+                        .build()
         );
     }
 
@@ -113,9 +122,18 @@ class PriceResolverTest {
         @DisplayName("Higher priority wins when multiple rules apply")
         void should_select_highest_priority() {
             var prices = List.of(
-                    Price.of(PRODUCT_35455, BRAND_ZARA, 1, 0, "45.00", "EUR", "2020-06-14T00:00:00", "2020-06-14T23:59:59"),
-                    Price.of(PRODUCT_35455, BRAND_ZARA, 8, 5, "55.00", "EUR", "2020-06-14T00:00:00", "2020-06-14T23:59:59"),
-                    Price.of(PRODUCT_35455, BRAND_ZARA, 9, 10, "22.00", "EUR", "2020-06-14T12:00:00", "2020-06-14T18:00:00")
+                    Price.builder().productId(PRODUCT_35455).brandId(BRAND_ZARA).priceList(1).priority(0)
+                            .price(BigDecimal.valueOf(45.00)).currency(Currency.of("EUR"))
+                            .dateRange(DateRange.of(LocalDateTime.parse("2020-06-14T00:00:00"),LocalDateTime.parse("2020-06-14T23:59:59")))
+                            .build(),
+                    Price.builder().productId(PRODUCT_35455).brandId(BRAND_ZARA).priceList(8).priority(5)
+                            .price(BigDecimal.valueOf(55.00)).currency(Currency.of("EUR"))
+                            .dateRange(DateRange.of(LocalDateTime.parse("2020-06-14T00:00:00"),LocalDateTime.parse("2020-06-14T23:59:59")))
+                            .build(),
+                    Price.builder().productId(PRODUCT_35455).brandId(BRAND_ZARA).priceList(9).priority(10)
+                            .price(BigDecimal.valueOf(22.00)).currency(Currency.of("EUR"))
+                            .dateRange(DateRange.of(LocalDateTime.parse("2020-06-14T12:00:00"),LocalDateTime.parse("2020-06-14T18:00:00")))
+                            .build()
             );
 
             var result = resolver.resolve(
