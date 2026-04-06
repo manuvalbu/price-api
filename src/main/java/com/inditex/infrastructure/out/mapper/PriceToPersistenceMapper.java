@@ -12,6 +12,7 @@ public class PriceToPersistenceMapper {
                 .productId(pricePersistence.getProductId())
                 .brandId(pricePersistence.getBrandId())
                 .priceList(pricePersistence.getPriceList())
+                .priority(pricePersistence.getPriority())
                 .currency(Currency.of(pricePersistence.getCurr()))
                 .price(pricePersistence.getPrice())
                 .dateRange(DateRange.of(pricePersistence.getStartDate(), pricePersistence.getEndDate()))

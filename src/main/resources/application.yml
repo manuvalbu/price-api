@@ -10,3 +10,8 @@ spring:
   h2:
     console.enabled: true
     console.path: /h2-console
+
+rest:
+  base-url: /api/inditex
+  endpoints:
+    price: /price

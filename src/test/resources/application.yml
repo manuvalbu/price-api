@@ -1,0 +1,4 @@
+rest:
+  base-url: /api/inditex
+  endpoints:
+    price: /price
