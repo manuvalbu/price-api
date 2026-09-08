@@ -40,11 +40,15 @@ public class FindPriceServiceTest {
         BigDecimal priceValue = BigDecimal.valueOf(35);
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusHours(2);
+        LocalDateTime requestedDate = startDate.plusHours(1);
+
         Price price = Price.builder().productId(productId).brandId(brandId).priceList(priceList).priority(0)
                 .price(priceValue).currency(Currency.of("EUR"))
                 .dateRange(DateRange.of(startDate,endDate)).build();
-        PriceQuery priceQuery = new PriceQuery(productId,brandId,startDate.plusHours(1));
-        when(priceRepositoryMock.findPrices(productId,brandId)).thenReturn(List.of(price));
+
+        PriceQuery priceQuery = new PriceQuery(productId,brandId,requestedDate);
+
+        when(priceRepositoryMock.findApplicablePrices(productId,brandId,requestedDate)).thenReturn(List.of(price));
 
         var result = findPriceService.execute(priceQuery);
 
