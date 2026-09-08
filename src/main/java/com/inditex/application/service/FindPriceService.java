@@ -24,10 +24,10 @@ public class FindPriceService implements FindPriceUseCase {
 
     @Override
     public PriceResponse execute(PriceQuery priceQuery) {
-        List<Price> availablePrices = priceRepository.findPrices(priceQuery.productId(), priceQuery.brandId());
-        if (availablePrices.isEmpty())
-            throw new PriceNotFoundException("price not found for product " + priceQuery.productId() + " and brand " + priceQuery.brandId());
-        Price priceFound = priceResolver.resolve(priceQuery.date(), availablePrices);
+        List<Price> applicablePrices = priceRepository.findApplicablePrices(priceQuery.productId(), priceQuery.brandId(), priceQuery.date());
+        if (applicablePrices.isEmpty())
+            throw new PriceNotFoundException("price not found for product " + priceQuery.productId() + " brand " + priceQuery.brandId() + "and date" + priceQuery.date().toString());
+        Price priceFound = priceResolver.resolve(priceQuery.date(), applicablePrices);
         return PriceToResponseMapper.toResponse(priceFound);
     }
 }
