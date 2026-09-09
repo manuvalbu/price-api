@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -59,6 +61,7 @@ public class PriceController {
     })
     public ResponseEntity<PriceResponse> searchPrice(
             @RequestParam("product_id")
+            @Positive(message = "product_id must be a positive number")
             @Parameter(
                     description = "Unique identifier of the product",
                     example = "35455"
@@ -66,6 +69,7 @@ public class PriceController {
             Long productId,
 
             @RequestParam("brand_id")
+            @Positive(message = "brand_id must be a positive number")
             @Parameter(
                     description = "Unique identifier of the brand",
                     example = "1"
