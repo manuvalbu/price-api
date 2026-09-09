@@ -16,10 +16,11 @@ import java.util.List;
 public class FindPriceService implements FindPriceUseCase {
 
     private final PriceRepository priceRepository;
-    private final PriceResolver priceResolver = new PriceResolver();
+    private final PriceResolver priceResolver;
 
-    public FindPriceService(PriceRepository priceRepository) {
+    public FindPriceService(PriceRepository priceRepository, PriceResolver priceResolver) {
         this.priceRepository = priceRepository;
+        this.priceResolver = priceResolver;
     }
 
     @Override
