@@ -11,6 +11,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -47,6 +48,12 @@ public class ExceptionController {
                 .collect(Collectors.joining("; "));
         log.warn("Validation failed: {}", message);
         return buildResponse(HttpStatus.BAD_REQUEST, message);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ExceptionDto> handleNoResource(final NoResourceFoundException e) {
+        log.debug("Static resource not found: {}", e.getResourcePath());
+        return buildResponse(HttpStatus.NOT_FOUND, "Resource not found");
     }
 
     @ExceptionHandler({Exception.class})
