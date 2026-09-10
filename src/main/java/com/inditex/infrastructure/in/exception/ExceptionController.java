@@ -23,17 +23,21 @@ public class ExceptionController {
 
     @ExceptionHandler(PriceNotFoundException.class)
     public ResponseEntity<ExceptionDto> handlePriceNotFoundException(final PriceNotFoundException e) {
+        log.warn("Price not found: {}", e.getMessage());
         return buildResponse(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ExceptionDto> handleMissingParameter(final MissingServletRequestParameterException e) {
+        log.warn("Missing request parameter: {}", e.getMessage());
         return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ExceptionDto> handleTypeMismatch(final MethodArgumentTypeMismatchException e) {
-        return buildResponse(HttpStatus.BAD_REQUEST, "Invalid value for parameter '" + e.getName() + "'");
+        String message = "Invalid value for parameter '" + e.getName() + "'";
+        log.warn("Type mismatch on parameter '{}': rejected value={}", e.getName(), e.getValue());
+        return buildResponse(HttpStatus.BAD_REQUEST, message);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -41,18 +45,19 @@ public class ExceptionController {
         String message = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining("; "));
+        log.warn("Validation failed: {}", message);
         return buildResponse(HttpStatus.BAD_REQUEST, message);
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ExceptionDto> handleUnknownException(
             final Exception e) {
+        log.error("Unexpected error", e);
         ExceptionDto exceptionDto = ExceptionDto
                 .builder()
                 .code(Exception.class.getName())
                 .message(e.getMessage())
                 .build();
-        log.info(exceptionDto.toString());
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(exceptionDto);
@@ -63,7 +68,6 @@ public class ExceptionController {
                 .code(status.name())
                 .message(message)
                 .build();
-        log.info(body.toString());
         return ResponseEntity.status(status).body(body);
     }
 }

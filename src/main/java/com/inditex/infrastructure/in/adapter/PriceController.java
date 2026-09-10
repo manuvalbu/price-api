@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,10 +82,10 @@ public class PriceController {
                     example = "2020-06-14T16:00:00"
             )
             LocalDateTime date) {
-        log.info("searching price");
-        PriceQuery priceQuery = PriceQuery.builder().productId(productId).brandId(brandId).date(date).build();
+        log.info("Searching applicable price for productId={}, brandId={}, date={}", productId, brandId, date);        PriceQuery priceQuery = PriceQuery.builder().productId(productId).brandId(brandId).date(date).build();
         PriceResponse priceResponse = findPriceService.execute(priceQuery);
-        log.info("price retrieved successfully");
+        log.info("Price found for productId={}: priceList={}, amount={}",
+                priceResponse.productId(), priceResponse.priceList(), priceResponse.price());
         return ResponseEntity.ok(priceResponse);
     }
 }
