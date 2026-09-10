@@ -113,11 +113,43 @@ class PriceApiControllerTest {
     }
 
     @Test
+    @DisplayName("Should return 400 when product_id has an invalid format")
+    void getPriceKoInvalidProductIdFormat_IT() throws Exception {
+        final String path = UriComponentsBuilder.fromPath(restBaseUrl + restEndpointPrice)
+                .queryParam("date", date)
+                .queryParam("brand_id", brandId)
+                .queryParam("product_id", "-1")
+                .toUriString();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(path))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(priceServiceMock);
+    }
+
+    @Test
     @DisplayName("Should return 400 when brand_id is missing")
     void getPriceKoMissingBrandId_IT() throws Exception {
         final String path = UriComponentsBuilder.fromPath(restBaseUrl + restEndpointPrice)
                 .queryParam("date", date)
                 .queryParam("product_id", productId)
+                .toUriString();
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(path))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(priceServiceMock);
+    }
+
+    @Test
+    @DisplayName("Should return 400 when brand_id has an invalid format")
+    void getPriceKoInvalidBrandIdFormat_IT() throws Exception {
+        final String path = UriComponentsBuilder.fromPath(restBaseUrl + restEndpointPrice)
+                .queryParam("date", date)
+                .queryParam("product_id", productId)
+                .queryParam("brand_id", "0")
                 .toUriString();
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(path))
