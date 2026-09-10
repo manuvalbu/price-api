@@ -7,6 +7,8 @@ import com.inditex.infrastructure.out.entity.PricePersistence;
 
 public class PriceToPersistenceMapper {
 
+    private PriceToPersistenceMapper() {}
+
     public static Price toPrice(PricePersistence pricePersistence) {
         return Price.builder()
                 .productId(pricePersistence.getProductId())

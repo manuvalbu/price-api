@@ -92,7 +92,7 @@ class PriceApiControllerTest {
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(path))
                 .andDo(print())
-                .andExpect(status().isNotFound());               ;
+                .andExpect(status().isNotFound());
 
         verify(priceServiceMock, times(1)).execute(priceQuery);
     }

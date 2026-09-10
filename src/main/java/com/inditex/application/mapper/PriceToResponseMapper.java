@@ -5,6 +5,8 @@ import com.inditex.domain.entity.Price;
 
 public class PriceToResponseMapper {
 
+    private PriceToResponseMapper() {}
+
     public static PriceResponse toResponse(Price price) {
         return PriceResponse.builder()
                 .productId(price.productId())

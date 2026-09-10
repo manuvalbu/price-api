@@ -45,7 +45,7 @@ class PriceTest {
             assertThat(price.productId()).isEqualTo(35455L);
             assertThat(price.brandId()).isEqualTo(1L);
             assertThat(price.priceList()).isEqualTo(1);
-            assertThat(price.priority()).isEqualTo(0);
+            assertThat(price.priority()).isZero();
             assertThat(price.price()).isEqualByComparingTo("35.50");
             assertThat(price.currency().code()).isEqualTo("EUR");
             assertThat(price.dateRange().start()).isEqualTo(START);
