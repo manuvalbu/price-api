@@ -3,9 +3,9 @@ package com.inditex.application.mapper;
 import com.inditex.application.dto.PriceResponse;
 import com.inditex.domain.entity.Price;
 
-public class PriceToResponseMapper {
+public class PriceResponseMapper {
 
-    private PriceToResponseMapper() {}
+    private PriceResponseMapper() {}
 
     public static PriceResponse toResponse(Price price) {
         return PriceResponse.builder()

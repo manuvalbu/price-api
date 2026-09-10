@@ -5,9 +5,9 @@ import com.inditex.domain.vo.Currency;
 import com.inditex.domain.vo.DateRange;
 import com.inditex.infrastructure.out.entity.PricePersistence;
 
-public class PriceToPersistenceMapper {
+public class PricePersistenceMapper {
 
-    private PriceToPersistenceMapper() {}
+    private PricePersistenceMapper() {}
 
     public static Price toPrice(PricePersistence pricePersistence) {
         return Price.builder()

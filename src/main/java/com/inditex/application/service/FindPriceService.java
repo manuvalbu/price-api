@@ -2,7 +2,7 @@ package com.inditex.application.service;
 
 import com.inditex.application.dto.PriceQuery;
 import com.inditex.application.dto.PriceResponse;
-import com.inditex.application.mapper.PriceToResponseMapper;
+import com.inditex.application.mapper.PriceResponseMapper;
 import com.inditex.application.port.in.FindPriceUseCase;
 import com.inditex.application.port.out.PriceRepository;
 import com.inditex.domain.entity.Price;
@@ -36,6 +36,6 @@ public class FindPriceService implements FindPriceUseCase {
         }
 
         Price priceFound = priceResolver.resolve(priceQuery.date(), applicablePrices);
-        return PriceToResponseMapper.toResponse(priceFound);
+        return PriceResponseMapper.toResponse(priceFound);
     }
 }

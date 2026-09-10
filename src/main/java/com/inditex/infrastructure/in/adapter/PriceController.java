@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class PriceController {
 
-    private final FindPriceUseCase findPriceService;
+    private final FindPriceUseCase findPriceUseCase;
 
     @GetMapping("${rest.endpoints.price}")
     @Operation(
@@ -83,7 +83,7 @@ public class PriceController {
             )
             LocalDateTime date) {
         log.info("Searching applicable price for productId={}, brandId={}, date={}", productId, brandId, date);        PriceQuery priceQuery = PriceQuery.builder().productId(productId).brandId(brandId).date(date).build();
-        PriceResponse priceResponse = findPriceService.execute(priceQuery);
+        PriceResponse priceResponse = findPriceUseCase.execute(priceQuery);
         log.info("Price found for productId={}: priceList={}, amount={}",
                 priceResponse.productId(), priceResponse.priceList(), priceResponse.price());
         return ResponseEntity.ok(priceResponse);
