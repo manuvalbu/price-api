@@ -1,8 +1,8 @@
 CREATE TABLE prices (
     price_id                INTEGER PRIMARY KEY,
     brand_id                INTEGER,
-    start_date              DATETIME,
-    end_date                DATETIME,
+    start_date              TIMESTAMP,
+    end_date                TIMESTAMP,
     price_list              INTEGER,
     product_id              INTEGER,
     priority                INTEGER,

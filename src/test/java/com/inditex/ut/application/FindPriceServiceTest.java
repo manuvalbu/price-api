@@ -4,6 +4,7 @@ import com.inditex.application.dto.PriceQuery;
 import com.inditex.application.port.out.PriceRepository;
 import com.inditex.application.service.FindPriceService;
 import com.inditex.domain.entity.Price;
+import com.inditex.domain.service.PriceResolver;
 import com.inditex.domain.vo.Currency;
 import com.inditex.domain.vo.DateRange;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FindPriceServiceTest {
+class FindPriceServiceTest {
 
     private FindPriceService findPriceService;
 
@@ -28,7 +29,7 @@ public class FindPriceServiceTest {
 
     @BeforeEach
     void setUp() {
-        findPriceService = new FindPriceService(priceRepositoryMock);
+        findPriceService = new FindPriceService(priceRepositoryMock, new PriceResolver());
     }
 
     @Test

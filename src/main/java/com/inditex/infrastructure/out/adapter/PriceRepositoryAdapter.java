@@ -3,7 +3,7 @@ package com.inditex.infrastructure.out.adapter;
 import com.inditex.application.port.out.PriceRepository;
 import com.inditex.domain.entity.Price;
 import com.inditex.infrastructure.out.entity.PricePersistence;
-import com.inditex.infrastructure.out.mapper.PriceToPersistenceMapper;
+import com.inditex.infrastructure.out.mapper.PricePersistenceMapper;
 import com.inditex.infrastructure.out.persistence.PriceSpecifications;
 import com.inditex.infrastructure.out.persistence.SpringDataPriceRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class PriceRepositoryAdapter implements PriceRepository {
         List<PricePersistence> prices = springDataPriceRepository.findAll(priceSpecifications);
 
         return prices.stream()
-                .map(PriceToPersistenceMapper::toPrice)
+                .map(PricePersistenceMapper::toPrice)
                 .toList();
     }
 }

@@ -154,11 +154,11 @@ class PriceResolverTest {
         @Test
         @DisplayName("No applicable price → should throw PriceNotFoundException")
         void no_applicable_price_throws_exception() {
+            LocalDateTime date = LocalDateTime.parse("2020-06-13T00:00:00");
+            List<Price> prices = samplePrices();
+
             assertThatExceptionOfType(PriceNotFoundException.class)
-                    .isThrownBy(() -> resolver.resolve(
-                            LocalDateTime.parse("2020-06-13T00:00:00"),
-                            samplePrices()
-                    ));
+                    .isThrownBy(() -> resolver.resolve(date, prices));
         }
 
         @Test

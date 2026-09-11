@@ -109,7 +109,7 @@ class PriceEndPointTest {
 
     private String buildUri(LocalDateTime date, Long productId, Long brandId) {
         return UriComponentsBuilder
-                .fromHttpUrl(BASE_URL + randomServerPort + restBaseUrl + restEndpointPrice)
+                .fromUriString(BASE_URL + randomServerPort + restBaseUrl + restEndpointPrice)
                 .queryParam("date", date.toString())
                 .queryParam("product_id", productId)
                 .queryParam("brand_id", brandId)

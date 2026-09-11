@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,7 +31,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class PriceController {
 
-    private final FindPriceUseCase findPriceService;
+    private final FindPriceUseCase findPriceUseCase;
 
     @GetMapping("${rest.endpoints.price}")
     @Operation(
@@ -59,6 +60,7 @@ public class PriceController {
     })
     public ResponseEntity<PriceResponse> searchPrice(
             @RequestParam("product_id")
+            @Positive(message = "product_id must be a positive number")
             @Parameter(
                     description = "Unique identifier of the product",
                     example = "35455"
@@ -66,6 +68,7 @@ public class PriceController {
             Long productId,
 
             @RequestParam("brand_id")
+            @Positive(message = "brand_id must be a positive number")
             @Parameter(
                     description = "Unique identifier of the brand",
                     example = "1"
@@ -79,10 +82,10 @@ public class PriceController {
                     example = "2020-06-14T16:00:00"
             )
             LocalDateTime date) {
-        log.info("searching price");
-        PriceQuery priceQuery = PriceQuery.builder().productId(productId).brandId(brandId).date(date).build();
-        PriceResponse priceResponse = findPriceService.execute(priceQuery);
-        log.info("price retrieved successfully");
+        log.info("Searching applicable price for productId={}, brandId={}, date={}", productId, brandId, date);        PriceQuery priceQuery = PriceQuery.builder().productId(productId).brandId(brandId).date(date).build();
+        PriceResponse priceResponse = findPriceUseCase.execute(priceQuery);
+        log.info("Price found for productId={}: priceList={}, amount={}",
+                priceResponse.productId(), priceResponse.priceList(), priceResponse.price());
         return ResponseEntity.ok(priceResponse);
     }
 }
