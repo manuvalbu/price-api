@@ -1,31 +1,85 @@
+
 # 🧾 Price API
 
-Spring Boot application that exposes a REST endpoint to retrieve the applicable price for a product based on a given date, brand, and product ID.
+Spring Boot REST API that returns the **applicable price** for a product given a brand and an application date/time.
+
+When several prices match, the one with the **highest priority** is selected.
+
+---
+
+## Features
+
+- **Hexagonal architecture (Ports & Adapters)**
+    - **Domain:** pure business rules (`Price`, `DateRange`, `Currency`, `PriceResolver`)
+    - **Application:** use case, ports, DTOs, and domain bean wiring
+    - **Infrastructure:** REST, JPA, Flyway, exception handling
+- **Database-side filtering** with Spring Data JPA Specifications (product, brand, date range, order by priority)
+- **Domain validation** (record invariants and value objects)
+- **HTTP input validation** on request parameters
+- **Flyway migrations** with official sample data
+- **OpenAPI / Swagger** documentation
+- **Unit, integration, and end-to-end tests**
+- **H2 in-memory database** for local development and tests
 
 ---
 
 ## 🚀 Tech Stack
 
-* Java 17+
-* Spring Boot
-* Spring Data JPA
-* Springdoc OpenAPI
-* H2 / Flyway
-* JUnit 5 + Mockito
+| Area | Technology |
+|------|------------|
+| Language | Java 17+ |
+| Framework | Spring Boot 4.x |
+| Persistence | Spring Data JPA + Specifications |
+| Database (local/test) | H2 in-memory |
+| Migrations | Flyway (`spring-boot-starter-flyway`) |
+| API docs | springdoc-openapi |
+| Tests | JUnit 5, Mockito, AssertJ, Spring Boot Test |
 
 ---
 
 ## 📌 Business Logic
 
-The API returns the **applicable price** based on:
-
-* Product ID
-* Brand ID
-* Application date
-
-If multiple prices are valid for the given date, the one with the **highest priority** is selected.
+1. A price is applicable when `startDate ≤ requestedDate ≤ endDate`.
+2. If several prices apply, the one with the **highest priority** wins.
+3. If none apply → **HTTP 404**.
 
 ---
+
+## 🧠 Architecture
+
+This project follows **Hexagonal Architecture** (Ports & Adapters).
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Infrastructure                          │
+│  ┌──────────────────┐              ┌─────────────────────┐  │
+│  │  REST Adapter    │              │  Persistence        │  │
+│  │  (Controller)    │              │  Adapter + JPA      │  │
+│  │  Exception       │              │  Specifications     │  │
+│  │  Handler         │              │  Flyway / H2        │  │
+│  └────────┬─────────┘              └──────────▲──────────┘  │
+│           │                                   │             │
+│           │ invokes                           │ implements  │
+└───────────┼───────────────────────────────────┼─────────────┘
+            │                                   │
+┌───────────┼───────────────────────────────────┼─────────────┐
+│           │         Application               │             │
+│  ┌────────▼─────────┐              ┌──────────┴──────────┐  │
+│  │ FindPriceUseCase │─────────────►│  PriceRepository    │  │
+│  │ FindPriceService │   uses port  │  (outbound port)    │  │
+│  │ DTOs / Mappers   │              └─────────────────────┘  │
+│  └────────┬─────────┘                                       │
+└───────────┼─────────────────────────────────────────────────┘
+            │ uses
+            ▼
+┌──────────────────────┐
+│        Domain        │
+│  Price, DateRange    │
+│  Currency            │
+│  PriceResolver       │
+│  Domain exceptions   │
+└──────────────────────┘
+```
 
 ## 🔗 Endpoint
 
@@ -58,8 +112,7 @@ curl -X GET "http://localhost:8888/api/inditex/price?product_id=35455&brand_id=1
   "priceList": 2,
   "startDate": "2020-06-14T15:00:00",
   "endDate": "2020-06-14T18:30:00",
-  "price": 25.45,
-  "curr": "EUR"
+  "price": 25.45
 }
 ```
 
@@ -94,11 +147,11 @@ cd <your-project>
 
 ### 2. Run application
 
-```bash
-mvn spring-boot:run
+```bash 
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-DDB_USERNAME=inditex -DDB_PASSWORD=inditex"
 ```
 
-Or from your IDE.
+Or from your IDE configuration with environment variables DB_USERNAME=inditex and DB_PASSWORD=inditex
 
 ---
 
@@ -109,17 +162,6 @@ mvn test
 ```
 ---
 
-
-
-## 🧠 Architecture
-
-This project follows a **Clean Architecture / Hexagonal Architecture** approach:
-
-* **Domain** → Core business logic (`Price`, `PriceResolver`)
-* **Application** → Use cases (`FindPriceUseCase`)
-* **Infrastructure** → Controllers, Persistence
-
----
 
 ## 👤 Author
 
